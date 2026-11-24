@@ -7,7 +7,6 @@
   <meta name="description" content="Explore first-pass thermal design tradeoffs for chips, batteries, and compact electronics.">
   <title>Thermal Studio — Electronics cooling planner</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
     :root{--paper:#f6f5f0;--card:#fffefa;--ink:#17231f;--muted:#75817b;--line:#e4e6de;--green:#24483c;--mint:#dceee2;--orange:#e89068;--lav:#e8e5f4;--shadow:0 12px 35px #23392e0b}
     *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55} button,input{font:inherit} button{cursor:pointer}
     .shell{max-width:1220px;margin:auto;padding:0 34px 56px}.topbar{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.03em}.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--green);display:grid;place-items:center;color:#e5f4e8;font-size:17px}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}.top-right{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.live-dot{height:7px;width:7px;background:#67a982;border-radius:50%;box-shadow:0 0 0 4px #67a98220}
@@ -18,6 +17,68 @@
     .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.info-card{padding:19px 20px;min-height:160px}.recommend{background:#e8f0e8;border-color:#dbe7db;position:relative;overflow:hidden}.recommend:after{content:'↗';font-family:'DM Serif Display',serif;font-size:90px;position:absolute;right:15px;bottom:-29px;color:#c5d9c8;transform:rotate(12deg)}.recommend .section-kicker{color:#64846c}.recommend h3{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;line-height:1.1;margin:11px 0 7px;max-width:250px}.recommend p{font-size:11px;color:#64776b;margin:0;max-width:300px;position:relative;z-index:1}.flow-result{font-family:'DM Mono',monospace;font-size:12px;color:#315b43;margin-top:10px}.mini-stat{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid #edf0e9;color:#7d8981;font-size:10px}.mini-stat:last-child{border:0}.mini-stat strong{font-family:'DM Mono',monospace;font-size:12px;color:#27372f;font-weight:500}.notes{border-top:1px solid var(--line);margin-top:22px;padding-top:15px;color:#87928b;font-size:10px;display:flex;justify-content:space-between;gap:16px}.notes span:first-child{max-width:760px}.reset{background:none;border:0;color:#718078;font-size:10px;text-decoration:underline;padding:0;white-space:nowrap}
     @media(max-width:850px){.shell{padding:0 20px 40px}.workspace{grid-template-columns:1fr}.inputs{position:static}.right-col{grid-row:2}.hero{padding-top:32px}.bottom-grid{grid-template-columns:1fr 1fr}}
     @media(max-width:560px){.shell{padding:0 14px 30px}.topbar{height:65px}.top-right span:not(.live-dot){display:none}.hero{display:block;padding:28px 0 22px}.model-tag{display:inline-flex;margin-top:16px}.workspace{gap:13px}.inputs{padding:18px}.result-hero{padding:19px 18px}.temperature{font-size:46px}.metric-row{gap:5px}.metric strong{font-size:13px}.compare{padding:17px 14px}.chart-area{height:150px}.chart-legend{gap:7px}.bottom-grid{grid-template-columns:1fr}.notes{display:block}.notes span{display:block;margin-bottom:8px}}
+    :root{--paper:#eef2ec;--card:#fffefa;--ink:#1d2b26;--muted:#75847b;--line:#e1e8df;--green:#204d3d;--mint:#dcefe1;--orange:#e78363;--lav:#e8e4f2;--shadow:0 16px 42px #23392e10}
+    body{background:radial-gradient(ellipse at 9% 12%,#f7e9dd 0,transparent 34%),radial-gradient(ellipse at 92% 38%,#e0eee4 0,transparent 38%),var(--paper);font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif}
+    .shell{max-width:1280px;padding:0 38px 58px}
+    .topbar{height:86px;border:0}
+    .brand-mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#244f40,#15362e);box-shadow:0 5px 12px #16392e25}
+    .hero{margin:20px 0 25px;padding:36px 42px;border-radius:26px;background:linear-gradient(115deg,#173b32 0%,#285743 65%,#386b51 100%);box-shadow:0 18px 40px #173b3220;color:#fff;position:relative;overflow:hidden}
+    .hero:after{content:'';position:absolute;right:9%;top:-155px;width:340px;height:340px;border:1px solid #ffffff20;border-radius:50%;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff06;pointer-events:none}
+    .hero>div{position:relative;z-index:1}
+    .hero .eyebrow{color:#c2d5c8}
+    .hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,4.4vw,56px);letter-spacing:-.04em;margin:12px 0}
+    .hero h1 em{color:#f3a17e}
+    .hero p{color:#d5e2d8;max-width:500px}
+    .model-tag{background:#ffffff12;border-color:#ffffff30;color:#f0f5f0;padding:10px 14px;backdrop-filter:blur(8px)}
+    .model-tag span{color:#f3a17e}
+    .workspace{grid-template-columns:320px minmax(0,1fr);gap:22px}
+    .panel{border-radius:21px;box-shadow:var(--shadow)}
+    .inputs{padding:24px;top:18px}
+    .panel-head{margin-bottom:20px}
+    .panel-head h2,.card-title{font-size:15px}
+    .eyebrow,.section-kicker,.step,.field-label .unit,.suffix,.metric strong,.flow-result,.mini-stat strong{font-family:ui-monospace,'SFMono-Regular',Consolas,monospace}
+    .section-kicker{letter-spacing:.09em}
+    .field-label{font-size:12px}
+    .input-wrap input{height:43px;border-radius:11px;border-color:#e0e7de;background:#fcfdf9}
+    .input-wrap input:focus{border-color:#6d9d7e;box-shadow:0 0 0 4px #75a68824}
+    .device{border-radius:10px;padding:9px 4px;font-size:11px;background:#f5f7f2}
+    .device.active{background:#e2eee3;border-color:#78a187;color:#28513d}
+    .cooling-tab{padding:9px 4px;border-radius:10px;font-size:11px}
+    .cooling-tab.active{background:linear-gradient(135deg,#244f40,#173b32);box-shadow:0 4px 10px #173b3220}
+    .result-hero{padding:25px 27px 22px;border:0;background:linear-gradient(120deg,#1c4035,#285743);color:#fff}
+    .result-hero:after{right:-55px;top:-126px;width:300px;height:300px;background:radial-gradient(circle,#f1a17c35 0,#e8f2e700 70%)}
+    .result-copy .section-kicker{color:#b9d1c0}
+    .temperature{font-family:Georgia,'Times New Roman',serif;font-size:59px;color:#fff8ee}
+    .temperature span{font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif;color:#c3d6c9}
+    .result-sub{color:#c3d6c9}
+    .metric{border-color:#ffffff25}
+    .metric strong{color:#fff;font-size:16px}
+    .metric span{color:#c0d3c6}
+    .status{background:#dcefe1;color:#28583d}
+    .status.warn{background:#ffe5d9;color:#9e4f32}
+    .right-col{gap:18px}
+    .compare{padding:22px 23px}
+    .compare-top p{font-size:11px}
+    .chart-legend{font-size:11px}
+    .chart-area{height:188px}
+    .chart-foot{font-size:11px}
+    .bottom-grid{gap:18px}
+    .info-card{padding:21px 22px;border-radius:21px}
+    .recommend{background:linear-gradient(135deg,#f5e4d8,#faeee5);border-color:#f0ddd0}
+    .recommend .section-kicker{color:#9e694f}
+    .recommend h3{font-family:Georgia,'Times New Roman',serif;font-size:25px;color:#302921}
+    .recommend p{color:#786a5d}
+    .recommend:after{color:#ebcbb9;font-family:Georgia,'Times New Roman',serif}
+    .flow-result{color:#855b43}
+    .mini-stat{font-size:11px}
+    .mini-stat strong{font-size:13px}
+    .notes{color:#718078;font-size:11px;border-color:#dbe4da}
+    .reset{font:inherit;color:#456a55}
+    button{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+    button:hover{transform:translateY(-1px)}
+    .device:hover,.cooling-tab:hover{box-shadow:0 4px 12px #263d3012}
+    @media(max-width:850px){.shell{padding:0 20px 42px}.hero{padding:30px 32px}.workspace{grid-template-columns:1fr;gap:18px}.inputs{position:static}.right-col{grid-row:auto}}
+    @media(max-width:560px){.shell{padding:0 14px 30px}.topbar{height:70px}.hero{margin:12px 0 17px;padding:26px 23px;border-radius:21px}.hero h1{font-size:39px}.model-tag{margin-top:17px}.workspace{gap:14px}.inputs{padding:19px}.result-hero{padding:20px 18px}.temperature{font-size:49px}.metric-row{gap:6px}.metric strong{font-size:13px}.metric span{font-size:9px}.compare{padding:18px 15px}.chart-area{height:155px}.chart-legend{gap:8px}.bottom-grid{grid-template-columns:1fr}.notes{display:block}.notes span{display:block;margin-bottom:10px}}
   </style>
 </head>
 <body>
@@ -80,10 +141,10 @@
   function estimate(modeKey,flow,power,ambient,eff){const r=thermal(modeKey,flow);const rise=power*r;const p=pressurePa(modeKey,flow);const hydraulic=p*flowM3s(modeKey,flow)/Math.max(eff/100,0.1);return {r,temp:ambient+rise,outlet:ambient+power/(modeKey==='air'?1.2*1005*flowM3s(modeKey,flow):Math.max(flow/60*1000*4180,1)),pressure:p,pump:hydraulic}}
   function optimum(modeKey,power,ambient,limit){const m=modes[modeKey];let lo=m.min,hi=m.max;if(estimate(modeKey,hi,power,ambient,55).temp>limit)return null;for(let i=0;i<38;i++){const mid=(lo+hi)/2;if(estimate(modeKey,mid,power,ambient,55).temp<=limit)hi=mid;else lo=mid}return hi}
   function drawChart(power,ambient,limit,selectedFlow){const svg=$('chart'),W=660,H=175,L=40,R=9,T=10,B=25;const plotW=W-L-R,plotH=H-T-B;const maxTemp=Math.max(limit+8,ambient+power*0.32,65);const minTemp=Math.min(ambient-2,15);const x=i=>L+i/5*plotW,y=t=>T+(maxTemp-t)/(maxTemp-minTemp)*plotH;let s='';
-    for(let i=0;i<4;i++){const v=minTemp+(maxTemp-minTemp)*i/3,yy=y(v);s+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#eef0e9"/><text x="${L-8}" y="${yy+3}" text-anchor="end" font-size="9" fill="#9aa39c" font-family="DM Mono">${Math.round(v)}°</text>`}
-    const ly=y(limit);s+=`<line x1="${L}" y1="${ly}" x2="${W-R}" y2="${ly}" stroke="#e8a47f" stroke-dasharray="4 4"/><text x="${W-R-2}" y="${ly-5}" text-anchor="end" font-size="9" fill="#bd7956" font-family="DM Sans">limit ${limit}°C</text>`;
+    for(let i=0;i<4;i++){const v=minTemp+(maxTemp-minTemp)*i/3,yy=y(v);s+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#eef0e9"/><text x="${L-8}" y="${yy+3}" text-anchor="end" font-size="9" fill="#9aa39c" font-family="monospace">${Math.round(v)}°</text>`}
+    const ly=y(limit);s+=`<line x1="${L}" y1="${ly}" x2="${W-R}" y2="${ly}" stroke="#e8a47f" stroke-dasharray="4 4"/><text x="${W-R-2}" y="${ly-5}" text-anchor="end" font-size="9" fill="#bd7956" font-family="sans-serif">limit ${limit}°C</text>`;
     for(const [key,m] of Object.entries(modes)){let points=[];for(let i=0;i<=5;i++){const f=key==='air'?10+i*98:0.2+i*1.35;const e=estimate(key,f,power,ambient,55);points.push(`${i===0?'M':'L'}${L+i/5*plotW},${y(e.temp)}`)}s+=`<path d="${points.join(' ')}" fill="none" stroke="${m.color}" stroke-width="${key===mode?3:2}" stroke-linecap="round" stroke-linejoin="round" opacity="${key===mode?1:.7}"/>`}
-    const current=estimate(mode,selectedFlow,power,ambient,val('efficiency'));const cx=L+Math.min(1,Math.max(0,(mode==='air'?selectedFlow-10:selectedFlow-.2)/(mode==='air'?490:6.75)))*plotW,cy=y(current.temp);s+=`<circle cx="${cx}" cy="${cy}" r="5" fill="${modes[mode].color}" stroke="white" stroke-width="2.5"/><text x="${L}" y="${H-4}" font-size="9" fill="#9aa39c" font-family="DM Mono">LOW FLOW</text><text x="${W-R}" y="${H-4}" text-anchor="end" font-size="9" fill="#9aa39c" font-family="DM Mono">HIGH FLOW</text>`;svg.innerHTML=s;
+    const current=estimate(mode,selectedFlow,power,ambient,val('efficiency'));const cx=L+Math.min(1,Math.max(0,(mode==='air'?selectedFlow-10:selectedFlow-.2)/(mode==='air'?490:6.75)))*plotW,cy=y(current.temp);s+=`<circle cx="${cx}" cy="${cy}" r="5" fill="${modes[mode].color}" stroke="white" stroke-width="2.5"/><text x="${L}" y="${H-4}" font-size="9" fill="#9aa39c" font-family="monospace">LOW FLOW</text><text x="${W-R}" y="${H-4}" text-anchor="end" font-size="9" fill="#9aa39c" font-family="monospace">HIGH FLOW</text>`;svg.innerHTML=s;
   }
   function render(){const power=Math.max(0,val('power')),ambient=val('ambient'),limit=val('limit'),flow=Math.max(modes[mode].min,val('flow')),eff=Math.min(95,Math.max(10,val('efficiency')));const e=estimate(mode,flow,power,ambient,eff),head=limit-e.temp;
     $('tempValue').innerHTML=`${e.temp.toFixed(1)}<span>°C</span>`;$('headroom').textContent=`${head>=0?'+':''}${head.toFixed(1)}°C`;$('thermalR').textContent=e.r.toFixed(3);$('outlet').textContent=`${e.outlet.toFixed(1)}°C`;
